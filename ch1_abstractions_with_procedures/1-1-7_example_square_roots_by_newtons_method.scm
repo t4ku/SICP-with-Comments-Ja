@@ -32,25 +32,40 @@
 ;1.4167 　　　　　(2/1.4167) = 1.4118 　　((1.4167 + 1.4118)/2) = 1.4142
 ;1.4142 	...	...
 
+; 7の平方根を、最初3と予測する
+
+; x : 求めたい平方根の対称となる数字(=7)
+; y1 : 最初の予測値(=3)
+
+; y2 = y1 + x / y1 = { 3    + (7 / 3)  } / 2 = 2.3333
+; y3 = y2 + x / y2 = { 2.3  + (7 / 2.3)} / 2 = 2.67
+; y4 = y3 + x / y3 = { 2.67 + (7 /2.67)} / 2 = 2.64
+
 ;この手順を形式化する
 
-(define (square x)(* x x))
+(print (sqrt 11))
 
-(define (improve guess x)
-	(average guess (/ x guess)))
-
-(define (average x y)
-	(/ (+ x y) 2))
-
-(define (good-enough? guess x)
-	(< (abs (- (square guess) x)) 0.001))
-
+; 最初の予想値を1として、再帰的に評価する
 (define (sqrt x)
 	(sqrt-iter 1.0 x))
 
+; 予測値が妥当であればそれを返し、精度が低い場合は精度を高めた予測値で再帰呼び出し
 (define (sqrt-iter guess x)
 	(if (good-enough? guess x)
 		guess
 		(sqrt-iter (improve guess x)
 					x)))
-(print (sqrt 9))
+
+; 予測値を2乗した値が、元の値と1000分の1単位で違わなければ妥当					
+(define (good-enough? guess x)
+	(< (abs (- (square guess) x)) 0.001))
+
+; yn+1 = ( yn + x / y ) / 2
+(define (improve guess x)
+	(average guess (/ x guess)))					
+
+(define (square x)(* x x))
+
+(define (average x y)
+	(/ (+ x y) 2))
+
